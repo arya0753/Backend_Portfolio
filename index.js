@@ -1,34 +1,54 @@
-import express, { application } from 'express'
-import { connectionDB } from './connection.js'
-import blogPostRoutes from './Routes/blogPostRoutes.js'
 import cors from "cors";
-import ContactForm from './Routes/ContactForm.js'
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
+import express from "express";
+import { connectionDB } from "./connection.js";
+import blogPostRoutes from "./Routes/blogPostRoutes.js";
+import ContactForm from "./Routes/ContactForm.js";
 
-import { fileURLToPath } from "url";
 import path from "path";
-
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express()
-app.use(cors());
+dotenv.config();
+
+const app = express();
+
+// ✅ Allowed origins for CORS
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  "https://your-frontend.onrender.com" // replace with your Render frontend URL
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow Postman/curl
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = "CORS policy: This origin is not allowed.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    }
+  })
+);
+
 app.use(express.json());
-dotenv.config()
 
-
-const PORT = process.env.PORT;
-
+// ✅ DB Connection
 connectionDB();
 
+// ✅ Static file serving
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-app.use('/api',blogPostRoutes);
 
-app.use('/api/postContact',ContactForm);
+// ✅ Routes
+app.use("/api", blogPostRoutes);
+app.use("/api/postContact", ContactForm);
 
+// ✅ Port
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT,()=>{
-    console.log(`Port is started on PORT:${PORT}`);
-    
-})
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on PORT: ${PORT}`);
+});
