@@ -15,10 +15,15 @@ dotenv.config();
 
 const app = express();
 
+// ✅ Ensure uploads folder exists
+import fs from "fs";
+const uploadDir = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
 // ✅ CORS setup
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://frontend-porfolio-ebon.vercel.app"
+  "https://frontend-portfolio-ebon.vercel.app" // fixed typo
 ];
 
 app.use(
@@ -41,11 +46,17 @@ app.use(express.json());
 connectionDB();
 
 // ✅ Serve static uploads
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/uploads", express.static(uploadDir));
 
 // ✅ Routes
 app.use("/api", blogPostRoutes);
 app.use("/api/postContact", ContactForm);
+
+// ✅ Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err.message });
+});
 
 // ✅ Start server
 const PORT = process.env.PORT || 8000;
