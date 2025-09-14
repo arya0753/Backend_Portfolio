@@ -1,12 +1,9 @@
 import Post from "../Models/BlogSchema.js";
 
-
-
 export const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
-
-    const photo = req.file ? req.file.path : null;
+    const photo = req.file ? req.file.filename : null; // ✅ save filename only
 
     const post = new Post({
       title,
@@ -16,13 +13,11 @@ export const createPost = async (req, res) => {
 
     await post.save();
     res.status(201).json(post);
-    console.log(req.files);
+    console.log(req.file); // check file info
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 
 export const getPosts = async (req, res) => {
   try {
@@ -32,7 +27,6 @@ export const getPosts = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 export const getPostById = async (req, res) => {
   try {
@@ -44,18 +38,13 @@ export const getPostById = async (req, res) => {
   }
 };
 
-
-
-
 export const updatePost = async (req, res) => {
   try {
     const { id } = req.params;
-
-    
     const updateData = { ...req.query, ...req.body };
 
     if (req.file) {
-      updateData.photo = req.file.path;
+      updateData.photo = req.file.filename; // ✅ save filename only
     }
 
     const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
@@ -72,10 +61,6 @@ export const updatePost = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
-
-
 
 export const deletePost = async (req, res) => {
   try {

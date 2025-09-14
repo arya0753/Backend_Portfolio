@@ -42,13 +42,13 @@ app.use(
 
 app.use(express.json());
 
-// ✅ Connect DB
+// ✅ Connect to MongoDB
 connectionDB();
 
 // ✅ Serve static uploads
 app.use("/uploads", express.static(uploadDir));
 
-// ✅ Routes
+// ✅ API routes
 app.use("/api", blogPostRoutes);
 app.use("/api/postContact", ContactForm);
 
