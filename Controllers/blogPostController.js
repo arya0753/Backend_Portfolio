@@ -1,24 +1,20 @@
 import Post from "../Models/BlogSchema.js";
 
+// ✅ Create a new post
 export const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const photo = req.file ? req.file.filename : null; // ✅ save filename only
+    const photo = req.file ? req.file.filename : null; // save filename only
 
-    const post = new Post({
-      title,
-      description,
-      photo,
-    });
-
+    const post = new Post({ title, description, photo });
     await post.save();
     res.status(201).json(post);
-    console.log(req.file); // check file info
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+// ✅ Get all posts
 export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find();
@@ -28,6 +24,7 @@ export const getPosts = async (req, res) => {
   }
 };
 
+// ✅ Get post by ID
 export const getPostById = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -38,13 +35,14 @@ export const getPostById = async (req, res) => {
   }
 };
 
+// ✅ Update post
 export const updatePost = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.query, ...req.body };
 
     if (req.file) {
-      updateData.photo = req.file.filename; // ✅ save filename only
+      updateData.photo = req.file.filename; // save filename only
     }
 
     const updatedPost = await Post.findByIdAndUpdate(id, updateData, {
@@ -52,9 +50,7 @@ export const updatePost = async (req, res) => {
       runValidators: true,
     });
 
-    if (!updatedPost) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    if (!updatedPost) return res.status(404).json({ message: "Post not found" });
 
     res.json(updatedPost);
   } catch (err) {
@@ -62,6 +58,7 @@ export const updatePost = async (req, res) => {
   }
 };
 
+// ✅ Delete post
 export const deletePost = async (req, res) => {
   try {
     const post = await Post.findByIdAndDelete(req.params.id);

@@ -7,7 +7,7 @@ import {
     deletePost,
     getPostById,
     getPosts,
-    updatePost
+    updatePost,
 } from "../Controllers/blogPostController.js";
 
 const router = express.Router();
@@ -16,7 +16,7 @@ const router = express.Router();
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-// ✅ Multer storage & filename
+// ✅ Multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// ✅ Multer file filter (only images)
+// ✅ Multer filter (images only)
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -37,7 +37,7 @@ const upload = multer({
   },
 });
 
-// ✅ CRUD routes
+// ✅ Routes
 router.post("/posts", upload.single("photo"), createPost);
 router.get("/posts", getPosts);
 router.get("/posts/:id", getPostById);

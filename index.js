@@ -23,13 +23,13 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 // ✅ CORS setup
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://frontend-portfolio-ebon.vercel.app" // fixed typo
+  "https://frontend-portfolio-ebon.vercel.app" // correct spelling
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); // allow non-browser requests
       if (!allowedOrigins.includes(origin)) {
         return callback(new Error("CORS policy: Not allowed."), false);
       }
@@ -40,6 +40,7 @@ app.use(
   })
 );
 
+// ✅ Parse JSON bodies
 app.use(express.json());
 
 // ✅ Connect to MongoDB
