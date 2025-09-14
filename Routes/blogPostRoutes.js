@@ -16,7 +16,7 @@ const router = express.Router();
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-// ✅ Multer storage with timestamped filenames
+// ✅ Multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// ✅ Multer file filter to allow only images
+// ✅ Multer file filter (only images)
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {

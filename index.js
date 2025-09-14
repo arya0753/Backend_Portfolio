@@ -5,6 +5,7 @@ import { connectionDB } from "./connection.js";
 import blogPostRoutes from "./Routes/blogPostRoutes.js";
 import ContactForm from "./Routes/ContactForm.js";
 
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -16,7 +17,6 @@ dotenv.config();
 const app = express();
 
 // ✅ Ensure uploads folder exists
-import fs from "fs";
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
