@@ -18,7 +18,7 @@ const app = express();
 // ✅ Allowed origins for CORS
 const allowedOrigins = [
   "http://localhost:5173", // local dev
-  "https://your-frontend.onrender.com" // replace with your Render frontend URL
+  "https://frontend-porfolio-ebon.vercel.app/" // replace with your Render frontend URL
 ];
 
 app.use(
