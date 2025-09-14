@@ -15,18 +15,18 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Allowed origins for CORS
+// ✅ CORS setup
 const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://frontend-porfolio-ebon.vercel.app" // ✅ removed trailing slash
+  "http://localhost:5173",
+  "https://frontend-porfolio-ebon.vercel.app"
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman/curl
+      if (!origin) return callback(null, true);
       if (!allowedOrigins.includes(origin)) {
-        return callback(new Error("CORS policy: This origin is not allowed."), false);
+        return callback(new Error("CORS policy: Not allowed."), false);
       }
       return callback(null, true);
     },
@@ -37,17 +37,17 @@ app.use(
 
 app.use(express.json());
 
-// ✅ DB Connection
+// ✅ Connect DB
 connectionDB();
 
-// ✅ Static file serving
+// ✅ Serve static uploads
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // ✅ Routes
 app.use("/api", blogPostRoutes);
 app.use("/api/postContact", ContactForm);
 
-// ✅ Port
+// ✅ Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on PORT: ${PORT}`);
