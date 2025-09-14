@@ -18,19 +18,20 @@ const app = express();
 // ✅ Allowed origins for CORS
 const allowedOrigins = [
   "http://localhost:5173", // local dev
-  "https://frontend-porfolio-ebon.vercel.app/" // replace with your Render frontend URL
+  "https://frontend-porfolio-ebon.vercel.app" // ✅ removed trailing slash
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin) return callback(null, true); // allow Postman/curl
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = "CORS policy: This origin is not allowed.";
-        return callback(new Error(msg), false);
+      if (!allowedOrigins.includes(origin)) {
+        return callback(new Error("CORS policy: This origin is not allowed."), false);
       }
       return callback(null, true);
-    }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 
@@ -48,7 +49,6 @@ app.use("/api/postContact", ContactForm);
 
 // ✅ Port
 const PORT = process.env.PORT || 8000;
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running on PORT: ${PORT}`);
 });
