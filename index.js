@@ -20,20 +20,26 @@ const app = express();
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-// ✅ CORS setup
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://frontend-portfolio-ebon.vercel.app" // correct spelling
-];
-
+// ✅ CORS setup with regex for Vercel previews
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser requests
-      if (!allowedOrigins.includes(origin)) {
-        return callback(new Error("CORS policy: Not allowed."), false);
+      if (!origin) return callback(null, true); // allow server-to-server & tools
+
+      const allowed = [
+        "http://localhost:5173",
+        "https://frontend-porfolio-ebon.vercel.app",
+      ];
+
+      // Allow all Vercel preview URLs for your project
+      if (
+        allowed.includes(origin) ||
+        /^https:\/\/frontend-porfolio-.*\.vercel\.app$/.test(origin)
+      ) {
+        return callback(null, true);
       }
-      return callback(null, true);
+
+      return callback(new Error("CORS policy: Not allowed"), false);
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
